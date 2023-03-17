@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="primaryColor">#0099ff</color>
+    <color name="primaryLightColor">#69c9ff</color>
+    <color name="primaryDarkColor">#006ccb</color>
+    <color name="primaryDarkColor2">#126B9D</color>
+    <color name="primaryDarkColor3">#305B77</color>
+    <color name="secondaryColor">#ff6600</color>
+    <color name="secondaryLightColor">#ff983f</color>
+    <color name="secondaryDarkColor">#c43300</color>
+    <color name="primaryTextColor">#ffffff</color>
+    <color name="secondaryTextColor">#ffffff</color>
+
+    <color name="grayColor">#7B7B7B</color>
+    <color name="greenColor">#619900</color>
+    <color name="redColor">#D7221A</color>
+    <color name="yellowColor">#FFDE03</color>
+    <color name="deepBlueColor">#0f2065</color>
+    <color name="green">#1ABB9C</color>
+    <color name="green1">#12db8a</color>
+    <color name="green2">#06782f</color>
+    <color name="green3">#0a9f48</color>
+    <color name="green4">#0a9f48</color>
+    <color name="green5">#0cb356</color>
+    <color name="black">#444444</color>
+    <color name="black_gray">#74726d</color>
+    <color name="red">#f94945</color>
+    <color name="blue_gray">#E2E6EC</color>
+    <color name="blue_gray2">#c8ccd2</color>
+    <color name="blue_gray3">#ffe6eaf1</color>
+    <color name="white">#FFFFFF</color>
+    <color name="dark_blue">#076d8c</color>
+    <color name="orane">#ffffac0e</color>
+    <color name="orane2">#ffffe7bb</color>
+    <color name="bgColor1">#eaeaea</color>
+    <color name="colorAccent_transparent">#5633ccff</color>
+    <color name="transparent_green">#901ABB9C</color>
+    <color name="transparent0">#00FFFFFF</color>
+    <color name="transparent20">#20FFFFFF</color>
+    <color name="transparent50">#50FFFFFF</color>
+
+    <color name="barColor">#B6B6B6</color>
+    <color name="backgroundColor">#e9e9e9</color>
+    <color name="backgroundColor2">#e9f0f3</color>
+    <color name="backgroundColor3">#e0eaee</color>
+    <color name="background">#4643D3</color>
+
+    <color name="disabled_color">#000000</color>
+    <color name="error_color">#E7492E</color>
+    <color name="underline_color">#B6B6B6</color>
+    <color name="floating_label_color">#000000</color>
+    <color name="popup_background">#fff</color>
+    <color name="colorBadge">#E91E63</color>
+    <color name="colorOther">#EEEEEE</color>
+    <color name="colorOther2">#cfcfcf</color>
+
+    <!--MEMBERSHIP-->
+    <color name="transparenttotal">#00ffffff</color>
+    <color name="transparent_orane">#95ffac0e</color>
+    <color name="colorPrimary">#eaeaea</color>
+    <color name="dark_orange">#9F6B07</color>
+    <color name="gray">#999999</color>
+    <color name="gray2">#666666</color>
+    <color name="edittext1white">#fcfcfc</color>
+
+    <!-- -->
+    <color name="dialog_secondary">#fcfcfc</color>
+    <color name="dialog_text">#211E1A</color>
+
+    <!-- messagerie app -->
+    <color name="pinkA200">#1E88E5</color>
+    <color name="tertiaryColor">#ff7d5260</color>
+    <color name="NavyBlue">#1976D2</color>
+
+</resources>
