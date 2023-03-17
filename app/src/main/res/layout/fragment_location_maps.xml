@@ -72,7 +72,7 @@
                         android:id="@+id/sfdNom"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/libelle"
+                        android:text="@{sfd.libelle}"
                         android:layout_marginStart="8dp"
                         app:layout_constraintBottom_toBottomOf="@+id/sfdImageView"
                         app:layout_constraintStart_toEndOf="@+id/sfdImageView"

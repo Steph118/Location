@@ -17,7 +17,6 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -30,7 +29,6 @@ import com.example.livedataxample.classes.LocationAgence;
 import com.example.livedataxample.classes.Sfd;
 import com.example.livedataxample.classes.ViewModelLocation;
 import com.example.livedataxample.databinding.FragmentLocationMapsBinding;
-import com.google.android.gms.common.api.internal.LifecycleFragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -46,12 +44,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class LocalisationAgencesFragment extends Fragment implements LifecycleOwner{
+public class LocalisationAgencesFragment extends Fragment {
 
     private FragmentLocationMapsBinding binding;
     private ViewModelLocation viewModelLocation;
@@ -66,6 +63,9 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
     private FusedLocationProviderClient fusedLocationClient;
     private Location mCurrentLocation = new Location("currentPosition") ;
 
+    double i = 0;
+    double latU,longU;
+
     public static LocalisationAgencesFragment newInstance() {
         return new LocalisationAgencesFragment();
     }
@@ -74,6 +74,7 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(fragContext);
+        getPositionCurrent();
     }
 
     @Nullable
@@ -94,23 +95,29 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
             callBackMethod();
             mapFragment.getMapAsync(callback);
         }
-        getLocationPermission();
-        getPositionCurrent();
+        init();
     }
 
     public void init() {
+        viewModelLocation = new ViewModelProvider(this).get(ViewModelLocation.class);
         binding.sfdNom.setText(sfd.getLibelle());
         binding.recyclerViewAgences.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new LocationAgenceAdapter(fragContext, locations,
-                viewModelLocation.getLocationsAgencesMut(), mCurrentLocation);
+        /*adapter = new LocationAgenceAdapter(fragContext, locations,
+                viewModelLocation.getLocationsAgencesMut(), mCurrentLocation);*/
+
+        /* ** */
+        Toast.makeText(fragContext, " "+longU, Toast.LENGTH_SHORT).show();
+        /* ** */
+
+        adapter = new LocationAgenceAdapter(fragContext, locations, latU, longU,
+                viewModelLocation.getLocationsAgencesMut());
         onRecyclerViewClick(adapter);
         binding.recyclerViewAgences.setAdapter(adapter);
+        getLocationPermission();
     }
 
     public void callBackMethod() {
-        viewModelLocation = new ViewModelProvider(this).get(ViewModelLocation.class);
-        viewModelLocation.init();
-        locations = viewModelLocation.getLocationAgences();
+        locations = getAllLocations();
             /*
             Google maps callback call
              */
@@ -141,14 +148,7 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
      * @param adapter
      */
     public void onRecyclerViewClick(LocationAgenceAdapter adapter) {
-
         adapter.setInterfaceOnClick(new LocationAgenceAdapter.InterfaceOnClick() {
-
-            /**
-             * @param v
-             * @param position
-             * Change the color of a marker of item when his constraint's layout is clicked
-             */
             @Override
             public void onClickItemConstraint(View v, int position) {
                 for (LocationAgence lg : locations) {
@@ -158,12 +158,6 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
                 marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
             }
 
-            /**
-             *
-             * @param v
-             * @param position
-             * when a item is clicked
-             */
             @Override
             public void onClickItemVoirPlus(View v, int position) {
             }
@@ -175,13 +169,35 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
      * Create a list
      * @return
      */
+    public List<LocationAgence> getAllLocations() {
+        List<LocationAgence> list = new ArrayList<>();
+        Agence agence1 = new Agence(
+                "libelle", "localite", "telephone", "email",
+                6.167712, 1.296551, sfd
+        );
+        Agence agence2 = new Agence(
+                "libelle", "localite", "telephone", "email",
+                6.171701, 1.313855, sfd
+        );
 
+        Agence agence3 = new Agence(
+                "libelle", "localite", "telephone", "email",
+                6.25458583, 1.28283964, sfd
+        );
+
+        LocationAgence locationAgence1 = new LocationAgence(agence1, 1);
+        LocationAgence locationAgence2 = new LocationAgence(agence2, 2);
+        LocationAgence locationAgence3 = new LocationAgence(agence3, 3);
+
+        list.add(locationAgence1);
+        list.add(locationAgence2);
+        list.add(locationAgence3);
+
+        return list;
+    }
+
+    //location of user
     protected void startLocationUpdates() {
-        /*
-            * update location of user
-            * get a current location of user
-            * after Any 5 secondes
-        */
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setInterval(10000);
         locationRequest.setFastestInterval(5000);
@@ -194,16 +210,9 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
                     return;
                 }
                 for (Location location : locationResult.getLocations()) {
-                    mCurrentLocation = location;
-                    /*Random random =new Random();
-                    mCurrentLocation.setLongitude(random.nextDouble() + 1);
-                    mCurrentLocation.setLatitude(random.nextDouble() + 6);*/
-                    if (locations != null){
-                        for (LocationAgence lagc : locations){
-                            lagc.setDistance(distance(mCurrentLocation,lagc.getLatLng()));
-                        }
-                        viewModelLocation.updateLocationsAgences(locations);
-                    }
+                    //mCurrentLocation = location;
+                    //viewModelLocation.updateLocationsAgences(locations);
+                    //Toast.makeText(fragContext, "++", Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -213,7 +222,7 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
     @Override
     public void onResume() {
         super.onResume();
-        //startLocationUpdates();
+        startLocationUpdates();
     }
 
     @Override
@@ -253,9 +262,6 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
         }
     }
 
-    /*
-    get a current location of user
-     */
     public void getPositionCurrent() {
         fusedLocationClient.getLastLocation()
                 .addOnSuccessListener(getActivity(),
@@ -263,22 +269,11 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
                             @Override
                             public void onSuccess(Location location) {
                                 if (location != null) {
-                                    mCurrentLocation = location;
-                                    init();
+                                    latU = location.getLatitude();
+                                    longU = location.getLongitude();
+                                    //Toast.makeText(fragContext, " "+longU, Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
-    }
-    public double distance(Location startLocation, LatLng end){
-        if (startLocation!=null){
-            Location endLocation = new Location("");
-            endLocation.setLatitude(end.latitude);
-            endLocation.setLongitude(end.longitude);
-            //double distance = SphericalUtil.computeDistanceBetween(latLng, to);
-            return startLocation.distanceTo(endLocation) / 1000 ;
-        }
-        else{
-            return 0;
-        }
     }
 }
