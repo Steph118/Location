@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -31,7 +32,6 @@ public class LocationAgenceAdapter extends RecyclerView.Adapter<LocationAgenceAd
     private Context context;
     private List<LocationAgence> locations;
     private Location locationUser;
-    private double latU, longU;
 
     private LiveData<List<LocationAgence>> locationsLiveData;
     //private ViewModelLocation viewModelLocation;
@@ -66,25 +66,17 @@ public class LocationAgenceAdapter extends RecyclerView.Adapter<LocationAgenceAd
         this.locationsLiveData = locationsLiveData;
     }
 
-    public LocationAgenceAdapter(Context context, List<LocationAgence> locations, double latU, double longU, LiveData<List<LocationAgence>> locationsLiveData) {
-        this.context = context;
-        this.locations = locations;
-        this.latU = latU;
-        this.longU = longU;
-        this.locationsLiveData = locationsLiveData;
-    }
-
     public String distance(Location from, LatLng to){
         if (from!=null){
-            LatLng latLng = new LatLng(from.getLatitude(),from.getLongitude());
-            Location location = new Location(from);
+            //LatLng latLng = new LatLng(from.getLatitude(),from.getLongitude());
+            Location location = new Location("to");
             location.setAltitude(to.latitude);
             location.setLongitude(to.longitude);
             //double distance = SphericalUtil.computeDistanceBetween(latLng, to);
             return String.valueOf(from.distanceTo(location));
         }
         else{
-            return "0";
+            return " ";
         }
     }
 
@@ -102,9 +94,8 @@ public class LocationAgenceAdapter extends RecyclerView.Adapter<LocationAgenceAd
         Agence agence = locations.get(position).getAgence();
         holder.libelle.setText(agence.getLibelle());
         holder.addresse.setText(agence.getLocalite());
-        holder.distance.setText(String.valueOf(latU));
-        //Log.e("TAG", "onBindViewHolder: "+latU );
-
+        String distanceOf = distance(locationUser,locations.get(position).getLatLng());
+        holder.distance.setText(distanceOf);
     }
 
     @Override
@@ -138,10 +129,11 @@ public class LocationAgenceAdapter extends RecyclerView.Adapter<LocationAgenceAd
             locationsLiveData.observeForever(new Observer<List<LocationAgence>>() {
                 @Override
                 public void onChanged(List<LocationAgence> list) {
+                   /* List<LocationAgence> loc =  list;
                     for (LocationAgence locationAgence : list){
-                        Random random = new Random();
-                        //distance.setText(String.valueOf(random.nextDouble() + 10));
-                    }
+                        distance.setText(String.valueOf(locationAgence.getDistance()));
+                    }*/
+                    distance.setText(String.valueOf(list.get(getLayoutPosition()).getDistance()));
                 }
             });
         }
