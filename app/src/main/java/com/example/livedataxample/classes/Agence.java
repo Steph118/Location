@@ -29,7 +29,6 @@ public class Agence implements Serializable {
         this.longitude = longitude;
         this.sfd = sfd;
     }
-
     public String getLibelle() {
         return libelle;
     }
