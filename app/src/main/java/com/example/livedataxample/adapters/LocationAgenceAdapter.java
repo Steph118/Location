@@ -66,14 +66,12 @@ public class LocationAgenceAdapter extends RecyclerView.Adapter<LocationAgenceAd
         this.locationsLiveData = locationsLiveData;
     }
 
-    public String distance(Location from, LatLng to){
-        if (from!=null){
-            //LatLng latLng = new LatLng(from.getLatitude(),from.getLongitude());
-            Location location = new Location("to");
-            location.setAltitude(to.latitude);
-            location.setLongitude(to.longitude);
-            //double distance = SphericalUtil.computeDistanceBetween(latLng, to);
-            return String.valueOf(from.distanceTo(location));
+    public String distance(Location startLocation, LatLng end){
+        if (startLocation!=null){
+            Location endLocation = new Location("");
+            endLocation.setLatitude(end.latitude);
+            endLocation.setLongitude(end.longitude);
+            return distance(startLocation.distanceTo(endLocation) / 1000 );
         }
         else{
             return " ";
@@ -95,7 +93,16 @@ public class LocationAgenceAdapter extends RecyclerView.Adapter<LocationAgenceAd
         holder.libelle.setText(agence.getLibelle());
         holder.addresse.setText(agence.getLocalite());
         String distanceOf = distance(locationUser,locations.get(position).getLatLng());
+        distanceOf += " Km";
         holder.distance.setText(distanceOf);
+        locationsLiveData.observeForever(new Observer<List<LocationAgence>>() {
+            @Override
+            public void onChanged(List<LocationAgence> list) {
+                String distanceOf = ""+ distance(list.get(holder.getAdapterPosition()).getDistance()) + " Km";
+                holder.distance.setText(distanceOf);
+                //Toast.makeText(context, "test", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -125,17 +132,12 @@ public class LocationAgenceAdapter extends RecyclerView.Adapter<LocationAgenceAd
                     interfaceOnClick.onClickItemVoirPlus(view,getLayoutPosition());
                 }
             });
-
-            locationsLiveData.observeForever(new Observer<List<LocationAgence>>() {
-                @Override
-                public void onChanged(List<LocationAgence> list) {
-                   /* List<LocationAgence> loc =  list;
-                    for (LocationAgence locationAgence : list){
-                        distance.setText(String.valueOf(locationAgence.getDistance()));
-                    }*/
-                    distance.setText(String.valueOf(list.get(getLayoutPosition()).getDistance()));
-                }
-            });
         }
+    }
+    public String distance(double x){
+        return String.format("%.2f", x);
+    }
+    public void updateUserList(int position) {
+        notifyDataSetChanged();
     }
 }
