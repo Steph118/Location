@@ -77,7 +77,7 @@ public class LocationAgenceAdapter extends RecyclerView.Adapter<LocationAgenceAd
             return " ";
         }
     }
-/*********/
+//
     @NonNull
     @Override
     public LocationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
