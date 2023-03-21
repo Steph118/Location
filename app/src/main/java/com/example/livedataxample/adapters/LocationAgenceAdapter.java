@@ -94,14 +94,14 @@ public class LocationAgenceAdapter extends RecyclerView.Adapter<LocationAgenceAd
         String distanceOf = distance(locationUser,locations.get(position).getLatLng());
         distanceOf += " Km";
         holder.distance.setText(distanceOf);
-        locationsLiveData.observeForever(new Observer<List<LocationAgence>>() {
+        /*locationsLiveData.observeForever(new Observer<List<LocationAgence>>() {
             @Override
             public void onChanged(List<LocationAgence> list) {
                 String distanceOf = ""+ distance(list.get(holder.getAdapterPosition()).getDistance()) + " Km";
                 holder.distance.setText(distanceOf);
                 //Toast.makeText(context, "test", Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
     }
 
     @Override

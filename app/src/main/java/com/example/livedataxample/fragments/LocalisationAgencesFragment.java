@@ -65,6 +65,14 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
     private final Sfd sfd = new Sfd("S1", "COCEC");
     private FusedLocationProviderClient fusedLocationClient;
     private Location mCurrentLocation = new Location("currentPosition") ;
+    private final Observer<List<LocationAgence>> observer
+            = new Observer<List<LocationAgence>>() {
+        @Override
+        public void onChanged(List<LocationAgence> list) {
+            Toast.makeText(fragContext, "ok", Toast.LENGTH_SHORT).show();
+        }
+    };
+    //private LocalisationAgencesFragment is;
 
     public static LocalisationAgencesFragment newInstance() {
         return new LocalisationAgencesFragment();
@@ -99,7 +107,6 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
     }
 
     public void init() {
-        binding.sfdNom.setText(sfd.getLibelle());
         binding.recyclerViewAgences.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new LocationAgenceAdapter(fragContext, locations,
                 viewModelLocation.getLocationsAgencesMut(), mCurrentLocation);
@@ -110,7 +117,7 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
     public void callBackMethod() {
         viewModelLocation = new ViewModelProvider(this).get(ViewModelLocation.class);
         viewModelLocation.init();
-        locations = viewModelLocation.getLocationAgences();
+        locations = viewModelLocation.getLocationsAgencesMut().getValue();
             /*
             Google maps callback call
              */
@@ -199,10 +206,11 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
                     mCurrentLocation.setLongitude(random.nextDouble() + 1);
                     mCurrentLocation.setLatitude(random.nextDouble() + 6);*/
                     if (locations != null){
-                        for (LocationAgence lagc : locations){
-                            lagc.setDistance(distance(mCurrentLocation,lagc.getLatLng()));
+                        for (LocationAgence loc : locations){
+                            loc.setDistance(distance(mCurrentLocation,loc.getLatLng()));
                         }
-                        viewModelLocation.updateLocationsAgences(locations);
+                        viewModelLocation.getLocationsAgencesMut().setValue(locations);
+                        viewModelLocation.getLocationsAgencesMut().observe(LocalisationAgencesFragment.this,observer);
                     }
                 }
             }
@@ -213,7 +221,7 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
     @Override
     public void onResume() {
         super.onResume();
-        //startLocationUpdates();
+        startLocationUpdates();
     }
 
     @Override
@@ -274,7 +282,6 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
             Location endLocation = new Location("");
             endLocation.setLatitude(end.latitude);
             endLocation.setLongitude(end.longitude);
-            //double distance = SphericalUtil.computeDistanceBetween(latLng, to);
             return startLocation.distanceTo(endLocation) / 1000 ;
         }
         else{
