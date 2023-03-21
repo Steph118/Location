@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -29,6 +30,7 @@ import com.example.livedataxample.classes.LocationAgence;
 import com.example.livedataxample.classes.Sfd;
 import com.example.livedataxample.classes.ViewModelLocation;
 import com.example.livedataxample.databinding.FragmentLocationMapsBinding;
+import com.google.android.gms.common.api.internal.LifecycleFragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -44,11 +46,12 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class LocalisationAgencesFragment extends Fragment {
+public class LocalisationAgencesFragment extends Fragment implements LifecycleOwner{
 
     private FragmentLocationMapsBinding binding;
     private ViewModelLocation viewModelLocation;
@@ -93,11 +96,9 @@ public class LocalisationAgencesFragment extends Fragment {
         }
         getLocationPermission();
         getPositionCurrent();
-
     }
 
     public void init() {
-        viewModelLocation = new ViewModelProvider(this).get(ViewModelLocation.class);
         binding.sfdNom.setText(sfd.getLibelle());
         binding.recyclerViewAgences.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new LocationAgenceAdapter(fragContext, locations,
@@ -107,7 +108,9 @@ public class LocalisationAgencesFragment extends Fragment {
     }
 
     public void callBackMethod() {
-        locations = getAllLocations();
+        viewModelLocation = new ViewModelProvider(this).get(ViewModelLocation.class);
+        viewModelLocation.init();
+        locations = viewModelLocation.getLocationAgences();
             /*
             Google maps callback call
              */
@@ -172,32 +175,6 @@ public class LocalisationAgencesFragment extends Fragment {
      * Create a list
      * @return
      */
-    public List<LocationAgence> getAllLocations() {
-        List<LocationAgence> list = new ArrayList<>();
-        Agence agence1 = new Agence(
-                "libelle", "localite", "telephone", "email",
-                8.167712, 3.296551, sfd
-        );
-        Agence agence2 = new Agence(
-                "libelle", "localite", "telephone", "email",
-                7.171701, 2.313855, sfd
-        );
-
-        Agence agence3 = new Agence(
-                "libelle", "localite", "telephone", "email",
-                6.25458583, 1.28283964, sfd
-        );
-
-        LocationAgence locationAgence1 = new LocationAgence(agence1, 1);
-        LocationAgence locationAgence2 = new LocationAgence(agence2, 2);
-        LocationAgence locationAgence3 = new LocationAgence(agence3, 3);
-
-        list.add(locationAgence1);
-        list.add(locationAgence2);
-        list.add(locationAgence3);
-
-        return list;
-    }
 
     protected void startLocationUpdates() {
         /*
@@ -218,13 +195,15 @@ public class LocalisationAgencesFragment extends Fragment {
                 }
                 for (Location location : locationResult.getLocations()) {
                     mCurrentLocation = location;
-                    Random random =new Random();
+                    /*Random random =new Random();
                     mCurrentLocation.setLongitude(random.nextDouble() + 1);
-                    mCurrentLocation.setLatitude(random.nextDouble() + 6);
-                    for (LocationAgence lagc : locations){
-                        lagc.setDistance(distance(mCurrentLocation,lagc.getLatLng()));
+                    mCurrentLocation.setLatitude(random.nextDouble() + 6);*/
+                    if (locations != null){
+                        for (LocationAgence lagc : locations){
+                            lagc.setDistance(distance(mCurrentLocation,lagc.getLatLng()));
+                        }
+                        viewModelLocation.updateLocationsAgences(locations);
                     }
-                    viewModelLocation.updateLocationsAgences(locations);
                 }
             }
         };
@@ -234,7 +213,7 @@ public class LocalisationAgencesFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        startLocationUpdates();
+        //startLocationUpdates();
     }
 
     @Override
@@ -290,14 +269,13 @@ public class LocalisationAgencesFragment extends Fragment {
                             }
                         });
     }
-    public double distance(Location from, LatLng to){
-        if (from!=null){
-            //LatLng latLng = new LatLng(from.getLatitude(),from.getLongitude());
-            Location location = new Location("to");
-            location.setAltitude(to.latitude);
-            location.setLongitude(to.longitude);
+    public double distance(Location startLocation, LatLng end){
+        if (startLocation!=null){
+            Location endLocation = new Location("");
+            endLocation.setLatitude(end.latitude);
+            endLocation.setLongitude(end.longitude);
             //double distance = SphericalUtil.computeDistanceBetween(latLng, to);
-            return from.distanceTo(location);
+            return startLocation.distanceTo(endLocation) / 1000 ;
         }
         else{
             return 0;
