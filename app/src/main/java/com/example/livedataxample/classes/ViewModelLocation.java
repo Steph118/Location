@@ -8,6 +8,7 @@ import java.util.List;
 
 public class ViewModelLocation extends ViewModel {
     private MutableLiveData<List<LocationAgence>> locationsAgencesMut = new MutableLiveData<>();
+    private List<LocationAgence> locationAgences = new ArrayList<>();
     private final Sfd sfd = new Sfd("S1", "COCEC");
 
     public MutableLiveData<List<LocationAgence>> getLocationsAgencesMut() {
@@ -19,6 +20,14 @@ public class ViewModelLocation extends ViewModel {
 
     public void setLocationsAgencesMut(MutableLiveData<List<LocationAgence>> locationsAgencesMut) {
         this.locationsAgencesMut = locationsAgencesMut;
+    }
+
+    public List<LocationAgence> getLocationAgences() {
+        return locationAgences;
+    }
+
+    public void setLocationAgences(List<LocationAgence> locationAgences) {
+        this.locationAgences = locationAgences;
     }
 
     public List<LocationAgence> getAllLocations() {
@@ -47,9 +56,10 @@ public class ViewModelLocation extends ViewModel {
         return list;
     }
     public void updateLocationsAgences(List<LocationAgence> list) {
-        locationsAgencesMut.setValue(list);
+        this.locationsAgencesMut.setValue(list);
+        this.locationAgences = list;
     }
     public void init(){
-        this.updateLocationsAgences(getAllLocations());
+        this.setLocationAgences(getAllLocations());
     }
 }

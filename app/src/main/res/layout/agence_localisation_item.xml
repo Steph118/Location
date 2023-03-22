@@ -40,6 +40,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="@string/sfd_name"
+                    android:textColor="@color/black"
                     app:layout_constraintBottom_toBottomOf="@+id/iconeLocalisation"
                     app:layout_constraintStart_toEndOf="@+id/iconeLocalisation"
                     app:layout_constraintTop_toTopOf="@+id/iconeLocalisation" />
@@ -50,7 +51,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="4dp"
                     android:layout_marginRight="4dp"
-                    android:text="10.25 Km"
+                    android:textColor="@color/black"
                     app:layout_constraintBottom_toBottomOf="@+id/libelleAgence"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/libelleAgence" />
@@ -74,6 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/description"
+                android:textColor="@color/black"
                 />
 
             <TextView

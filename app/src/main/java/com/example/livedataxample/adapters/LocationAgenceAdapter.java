@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -25,16 +27,15 @@ import com.example.livedataxample.classes.ViewModelLocation;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.SphericalUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class LocationAgenceAdapter extends RecyclerView.Adapter<LocationAgenceAdapter.LocationViewHolder>{
+public class LocationAgenceAdapter extends RecyclerView.Adapter<LocationAgenceAdapter.LocationViewHolder> implements DefaultLifecycleObserver {
     private Context context;
     private List<LocationAgence> locations;
     private Location locationUser;
-
     private LiveData<List<LocationAgence>> locationsLiveData;
-    //private ViewModelLocation viewModelLocation;
 
     public interface InterfaceOnClick{
         void onClickItemConstraint(View v , int position);
@@ -91,17 +92,21 @@ public class LocationAgenceAdapter extends RecyclerView.Adapter<LocationAgenceAd
         Agence agence = locations.get(position).getAgence();
         holder.libelle.setText(agence.getLibelle());
         holder.addresse.setText(agence.getLocalite());
-        String distanceOf = distance(locationUser,locations.get(position).getLatLng());
-        distanceOf += " Km";
-        holder.distance.setText(distanceOf);
-        /*locationsLiveData.observeForever(new Observer<List<LocationAgence>>() {
+        if (locationUser!=null){
+            String distanceOf = distance(locationUser,locations.get(position).getLatLng());
+            distanceOf += " Km";
+            holder.distance.setText(distanceOf);
+        }else{
+            holder.distance.setText("");
+        }
+
+        locationsLiveData.observeForever(new Observer<List<LocationAgence>>() {
             @Override
             public void onChanged(List<LocationAgence> list) {
                 String distanceOf = ""+ distance(list.get(holder.getAdapterPosition()).getDistance()) + " Km";
                 holder.distance.setText(distanceOf);
-                //Toast.makeText(context, "test", Toast.LENGTH_SHORT).show();
             }
-        });*/
+        });
     }
 
     @Override
@@ -133,10 +138,14 @@ public class LocationAgenceAdapter extends RecyclerView.Adapter<LocationAgenceAd
             });
         }
     }
+
+    @Override
+    public void onDestroy(@NonNull LifecycleOwner owner) {
+        DefaultLifecycleObserver.super.onDestroy(owner);
+        locationsLiveData.removeObservers(owner);
+    }
+
     public String distance(double x){
         return String.format("%.2f", x);
-    }
-    public void updateUserList(int position) {
-        notifyDataSetChanged();
     }
 }

@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -65,14 +67,14 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
     private final Sfd sfd = new Sfd("S1", "COCEC");
     private FusedLocationProviderClient fusedLocationClient;
     private Location mCurrentLocation = new Location("currentPosition") ;
-    private final Observer<List<LocationAgence>> observer
+
+    /*private final Observer<List<LocationAgence>> observer
             = new Observer<List<LocationAgence>>() {
         @Override
         public void onChanged(List<LocationAgence> list) {
-            Toast.makeText(fragContext, "ok", Toast.LENGTH_SHORT).show();
+            adapter.updateUserList(list);
         }
-    };
-    //private LocalisationAgencesFragment is;
+    };*/
 
     public static LocalisationAgencesFragment newInstance() {
         return new LocalisationAgencesFragment();
@@ -102,8 +104,7 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
             callBackMethod();
             mapFragment.getMapAsync(callback);
         }
-        getLocationPermission();
-        getPositionCurrent();
+        permit();
     }
 
     public void init() {
@@ -117,7 +118,7 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
     public void callBackMethod() {
         viewModelLocation = new ViewModelProvider(this).get(ViewModelLocation.class);
         viewModelLocation.init();
-        locations = viewModelLocation.getLocationsAgencesMut().getValue();
+        locations = viewModelLocation.getLocationAgences();
             /*
             Google maps callback call
              */
@@ -173,6 +174,12 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
              */
             @Override
             public void onClickItemVoirPlus(View v, int position) {
+                AgenceInfosBottomSheet agenceInfosBottomSheet = AgenceInfosBottomSheet.newInstance();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("agenceInfos",locations.get(position).getAgence());
+                agenceInfosBottomSheet.setArguments(bundle);
+                agenceInfosBottomSheet.show(getParentFragmentManager()
+                        ,AgenceInfosBottomSheet.TAG);
             }
         });
     }
@@ -202,15 +209,16 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
                 }
                 for (Location location : locationResult.getLocations()) {
                     mCurrentLocation = location;
-                    /*Random random =new Random();
+                    Random random =new Random();
                     mCurrentLocation.setLongitude(random.nextDouble() + 1);
-                    mCurrentLocation.setLatitude(random.nextDouble() + 6);*/
+                    mCurrentLocation.setLatitude(random.nextDouble() + 6);
                     if (locations != null){
                         for (LocationAgence loc : locations){
                             loc.setDistance(distance(mCurrentLocation,loc.getLatLng()));
                         }
-                        viewModelLocation.getLocationsAgencesMut().setValue(locations);
-                        viewModelLocation.getLocationsAgencesMut().observe(LocalisationAgencesFragment.this,observer);
+                        //viewModelLocation.getLocationsAgencesMut().setValue(locations);
+                        viewModelLocation.updateLocationsAgences(locations);
+                        //viewModelLocation.getLocationsAgencesMut().observe(LocalisationAgencesFragment.this,observer);
                     }
                 }
             }
@@ -237,7 +245,7 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
          * onRequestPermissionsResult.
          */
         this.mLocationPermissionGranted = false;
-        if (ContextCompat.checkSelfPermission(this.fragContext.getApplicationContext(),
+        if (ContextCompat.checkSelfPermission(/*this.fragContext.getApplicationContext()*/fragContext,
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             this.mLocationPermissionGranted = true;
@@ -252,7 +260,6 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        mLocationPermissionGranted = false;
         if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -287,5 +294,36 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
         else{
             return 0;
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        fusedLocationClient.removeLocationUpdates(locationCallback);
+    }
+
+    public void permit(){
+        ActivityResultLauncher<String[]> locationPermissionRequest =
+                registerForActivityResult(new ActivityResultContracts
+                                .RequestMultiplePermissions(), result -> {
+                            Boolean fineLocationGranted = result.getOrDefault(
+                                    Manifest.permission.ACCESS_FINE_LOCATION, false);
+                            Boolean coarseLocationGranted = result.getOrDefault(
+                                    Manifest.permission.ACCESS_COARSE_LOCATION,false);
+                            if (fineLocationGranted != null && fineLocationGranted) {
+                                getPositionCurrent();
+                            } else if (coarseLocationGranted != null && coarseLocationGranted) {
+                                getPositionCurrent();
+                            } else {
+                                mCurrentLocation = null;
+                                init();
+                            }
+                        }
+                );
+
+        locationPermissionRequest.launch(new String[] {
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+        });
     }
 }
