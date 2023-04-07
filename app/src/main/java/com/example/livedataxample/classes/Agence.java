@@ -5,8 +5,6 @@ import androidx.databinding.DataBindingUtil;
 import java.io.Serializable;
 
 public class Agence implements Serializable {
-
-
     private String libelle;
     private String localite;
     private String telephone;

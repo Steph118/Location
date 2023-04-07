@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">LiveDataXample</string>
-    <string name="open">Open</string>
+    <string name="graph">Graph Activity</string>
+    <string name="maps">Maps Activity</string>
     <string name="sfd_name">SFD label</string>
     <string name="localisation">Location</string>
     <string name="description">description</string>

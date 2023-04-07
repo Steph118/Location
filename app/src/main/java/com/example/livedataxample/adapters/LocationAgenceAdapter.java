@@ -32,8 +32,8 @@ import java.util.List;
 import java.util.Random;
 
 public class LocationAgenceAdapter extends RecyclerView.Adapter<LocationAgenceAdapter.LocationViewHolder> implements DefaultLifecycleObserver {
-    private Context context;
-    private List<LocationAgence> locations;
+    private final Context context;
+    private final List<LocationAgence> locations;
     private Location locationUser;
     private LiveData<List<LocationAgence>> locationsLiveData;
 

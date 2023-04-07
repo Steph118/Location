@@ -62,12 +62,9 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
     private List<LocationAgence> locations = new ArrayList<>();
     private OnMapReadyCallback callback;
     private LocationCallback locationCallback;
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private boolean mLocationPermissionGranted;
-    private final Sfd sfd = new Sfd("S1", "COCEC");
     private FusedLocationProviderClient fusedLocationClient;
     private Location mCurrentLocation = new Location("currentPosition") ;
-
+    private SupportMapFragment mapFragment;
     /*private final Observer<List<LocationAgence>> observer
             = new Observer<List<LocationAgence>>() {
         @Override
@@ -83,7 +80,13 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getData();
+    }
+    public void getData(){
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(fragContext);
+        viewModelLocation = new ViewModelProvider(this).get(ViewModelLocation.class);
+        viewModelLocation.init();
+        locations = viewModelLocation.getLocationAgences();
     }
 
     @Nullable
@@ -98,11 +101,9 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+       mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
             callBackMethod();
-            mapFragment.getMapAsync(callback);
         }
         permit();
     }
@@ -116,9 +117,6 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
     }
 
     public void callBackMethod() {
-        viewModelLocation = new ViewModelProvider(this).get(ViewModelLocation.class);
-        viewModelLocation.init();
-        locations = viewModelLocation.getLocationAgences();
             /*
             Google maps callback call
              */
@@ -142,14 +140,17 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
 
             }
         };
+        mapFragment.getMapAsync(callback);
     }
 
+    public void size(){
+
+    }
     /**
      * RecyclerView click interface
      * @param adapter
      */
     public void onRecyclerViewClick(LocationAgenceAdapter adapter) {
-
         adapter.setInterfaceOnClick(new LocationAgenceAdapter.InterfaceOnClick() {
 
             /**
@@ -164,6 +165,7 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
                 }
                 Marker marker = locations.get(position).getMarker();
                 marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+
             }
 
             /**
@@ -209,16 +211,14 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
                 }
                 for (Location location : locationResult.getLocations()) {
                     mCurrentLocation = location;
-                    Random random =new Random();
+                    /*Random random =new Random();
                     mCurrentLocation.setLongitude(random.nextDouble() + 1);
                     mCurrentLocation.setLatitude(random.nextDouble() + 6);
-                    if (locations != null){
+                    */if (locations != null){
                         for (LocationAgence loc : locations){
                             loc.setDistance(distance(mCurrentLocation,loc.getLatLng()));
                         }
-                        //viewModelLocation.getLocationsAgencesMut().setValue(locations);
                         viewModelLocation.updateLocationsAgences(locations);
-                        //viewModelLocation.getLocationsAgencesMut().observe(LocalisationAgencesFragment.this,observer);
                     }
                 }
             }
@@ -237,37 +237,6 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
         super.onAttach(context);
         this.fragContext = context;
     }
-
-    private void getLocationPermission() {
-        /*
-         * Request location permission, so that we can get the location of the
-         * device. The result of the permission request is handled by a callback,
-         * onRequestPermissionsResult.
-         */
-        this.mLocationPermissionGranted = false;
-        if (ContextCompat.checkSelfPermission(/*this.fragContext.getApplicationContext()*/fragContext,
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            this.mLocationPermissionGranted = true;
-        } else {
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                mLocationPermissionGranted = true;
-            }
-        }
-    }
-
     /*
     get a current location of user
      */
@@ -320,7 +289,6 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
                             }
                         }
                 );
-
         locationPermissionRequest.launch(new String[] {
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION
