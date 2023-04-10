@@ -12,7 +12,7 @@ import java.io.Serializable;
                 @Index(value = "telephone",unique = true)})
 public class PersonneInfos implements Serializable {
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private long id;
     @ColumnInfo(name = "nom")
     private String nom;
     @ColumnInfo(name = "prenom")
@@ -21,21 +21,21 @@ public class PersonneInfos implements Serializable {
     private int age;
     @ColumnInfo(name = "email")
     private String email;
-    @ColumnInfo(name = "nationalite")
-    private Pays nationalite;
-    @ColumnInfo(name = "localite")
-    private Localite localite;
+    @ColumnInfo(name = "nationalite_pays_id")
+    private long nationalite;
+    @ColumnInfo(name = "localite_id")
+    private long localite;
     @ColumnInfo(name = "telephone")
     private String telephone;
 
     public PersonneInfos() {
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -71,19 +71,19 @@ public class PersonneInfos implements Serializable {
         this.email = email;
     }
 
-    public Pays getNationalite() {
+    public long getNationalite() {
         return nationalite;
     }
 
-    public void setNationalite(Pays nationalite) {
+    public void setNationalite(long nationalite) {
         this.nationalite = nationalite;
     }
 
-    public Localite getLocalite() {
+    public long getLocalite() {
         return localite;
     }
 
-    public void setLocalite(Localite localite) {
+    public void setLocalite(long localite) {
         this.localite = localite;
     }
 

@@ -14,16 +14,12 @@ import java.util.List;
 public interface PaysDAO {
     @Insert
     void insertOne(Pays pays);
-
     @Insert
     void insertOne(Pays...pays);
-
     @Query("select * from pays")
     List<Pays> getAllPays();
-
     @Delete
     void deleteOne(Pays pays);
-
     @Update
     void updateOne(Pays pays);
 }

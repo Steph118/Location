@@ -10,22 +10,24 @@ import java.io.Serializable;
 @Entity(tableName = "users")
 public class User implements Serializable {
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private long id;
     @ColumnInfo(name = "code")
     private String code;
     @ColumnInfo(name = "login")
     private String login;
     @ColumnInfo(name = "password")
     private String password;
+    @ColumnInfo(name = "personne_infos_id")
+    private long personneInfos;
 
     public User() {
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -53,6 +55,14 @@ public class User implements Serializable {
         this.password = password;
     }
 
+    public long getPersonneInfos() {
+        return personneInfos;
+    }
+
+    public void setPersonneInfos(long personneInfos) {
+        this.personneInfos = personneInfos;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -60,6 +70,7 @@ public class User implements Serializable {
                 ", code='" + code + '\'' +
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
+                ", personneInfos=" + personneInfos +
                 '}';
     }
 }

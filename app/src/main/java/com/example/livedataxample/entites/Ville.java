@@ -9,20 +9,20 @@ import java.io.Serializable;
 @Entity(tableName = "villes")
 public class Ville implements Serializable {
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private long id;
     @ColumnInfo(name = "libelle")
     private String libelle;
-    @ColumnInfo(name = "pays")
-    private Pays pays;
+    @ColumnInfo(name = "pays_id")
+    private long paysId;
 
     public Ville() {
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -34,12 +34,12 @@ public class Ville implements Serializable {
         this.libelle = libelle;
     }
 
-    public Pays getPays() {
-        return pays;
+    public long getPaysId() {
+        return paysId;
     }
 
-    public void setPays(Pays pays) {
-        this.pays = pays;
+    public void setPaysId(long paysId) {
+        this.paysId = paysId;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class Ville implements Serializable {
         return "Ville{" +
                 "id=" + id +
                 ", libelle='" + libelle + '\'' +
-                ", pays=" + pays +
+                ", paysId=" + paysId +
                 '}';
     }
 }

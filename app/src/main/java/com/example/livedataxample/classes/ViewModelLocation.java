@@ -5,31 +5,25 @@ import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-
 public class ViewModelLocation extends ViewModel {
     private MutableLiveData<List<LocationAgence>> locationsAgencesMut = new MutableLiveData<>();
     private List<LocationAgence> locationAgences = new ArrayList<>();
     private final Sfd sfd = new Sfd("S1", "COCEC");
-
     public MutableLiveData<List<LocationAgence>> getLocationsAgencesMut() {
         if (locationsAgencesMut ==null){
             return locationsAgencesMut = new MutableLiveData<>();
         }
         return locationsAgencesMut;
     }
-
     public void setLocationsAgencesMut(MutableLiveData<List<LocationAgence>> locationsAgencesMut) {
         this.locationsAgencesMut = locationsAgencesMut;
     }
-
     public List<LocationAgence> getLocationAgences() {
         return locationAgences;
     }
-
     public void setLocationAgences(List<LocationAgence> locationAgences) {
         this.locationAgences = locationAgences;
     }
-
     public List<LocationAgence> getAllLocations() {
         List<LocationAgence> list = new ArrayList<>();
         Agence agence1 = new Agence(

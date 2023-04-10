@@ -52,9 +52,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
 public class LocalisationAgencesFragment extends Fragment implements LifecycleOwner{
-
     private FragmentLocationMapsBinding binding;
     private ViewModelLocation viewModelLocation;
     private Context fragContext;
@@ -72,11 +70,9 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
             adapter.updateUserList(list);
         }
     };*/
-
     public static LocalisationAgencesFragment newInstance() {
         return new LocalisationAgencesFragment();
     }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,7 +84,6 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
         viewModelLocation.init();
         locations = viewModelLocation.getLocationAgences();
     }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -97,7 +92,6 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
         binding = FragmentLocationMapsBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -107,7 +101,6 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
         }
         permit();
     }
-
     public void init() {
         binding.recyclerViewAgences.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new LocationAgenceAdapter(fragContext, locations,
@@ -115,7 +108,6 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
         onRecyclerViewClick(adapter);
         binding.recyclerViewAgences.setAdapter(adapter);
     }
-
     public void callBackMethod() {
             /*
             Google maps callback call
@@ -142,7 +134,6 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
         };
         mapFragment.getMapAsync(callback);
     }
-
     public void size(){
 
     }
@@ -152,7 +143,6 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
      */
     public void onRecyclerViewClick(LocationAgenceAdapter adapter) {
         adapter.setInterfaceOnClick(new LocationAgenceAdapter.InterfaceOnClick() {
-
             /**
              * @param v
              * @param position
@@ -167,9 +157,7 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
                 marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 
             }
-
             /**
-             *
              * @param v
              * @param position
              * when a item is clicked
@@ -186,12 +174,10 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
         });
     }
 
-
     /**
      * Create a list
      * @return
      */
-
     protected void startLocationUpdates() {
         /*
             * update location of user
@@ -225,18 +211,17 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
         };
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
     }
-
     @Override
     public void onResume() {
         super.onResume();
         startLocationUpdates();
     }
-
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.fragContext = context;
     }
+
     /*
     get a current location of user
      */
@@ -264,13 +249,11 @@ public class LocalisationAgencesFragment extends Fragment implements LifecycleOw
             return 0;
         }
     }
-
     @Override
     public void onPause() {
         super.onPause();
         fusedLocationClient.removeLocationUpdates(locationCallback);
     }
-
     public void permit(){
         ActivityResultLauncher<String[]> locationPermissionRequest =
                 registerForActivityResult(new ActivityResultContracts
