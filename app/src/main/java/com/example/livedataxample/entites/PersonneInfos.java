@@ -31,6 +31,18 @@ public class PersonneInfos implements Serializable {
     public PersonneInfos() {
     }
 
+    public PersonneInfos(String nom, String prenom, int age,
+                         String email, long nationalite,
+                         long localite, String telephone) {
+        this.nom = nom;
+        this.prenom = prenom;
+        this.age = age;
+        this.email = email;
+        this.nationalite = nationalite;
+        this.localite = localite;
+        this.telephone = telephone;
+    }
+
     public long getId() {
         return id;
     }

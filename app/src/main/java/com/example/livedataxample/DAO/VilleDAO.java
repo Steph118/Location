@@ -24,6 +24,9 @@ public interface VilleDAO {
     @Delete
     void deleteOne(Ville ville);
 
+    @Query("delete from villes")
+    void deleteAll();
+
     @Update
     void updateOne(Ville ville);
 }

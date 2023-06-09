@@ -11,8 +11,6 @@ import java.io.Serializable;
 public class User implements Serializable {
     @PrimaryKey(autoGenerate = true)
     private long id;
-    @ColumnInfo(name = "code")
-    private String code;
     @ColumnInfo(name = "login")
     private String login;
     @ColumnInfo(name = "password")
@@ -23,20 +21,18 @@ public class User implements Serializable {
     public User() {
     }
 
+    public User(String login, String password, long personneInfos) {
+        this.login = login;
+        this.password = password;
+        this.personneInfos = personneInfos;
+    }
+
     public long getId() {
         return id;
     }
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public String getLogin() {
@@ -67,7 +63,6 @@ public class User implements Serializable {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", code='" + code + '\'' +
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
                 ", personneInfos=" + personneInfos +

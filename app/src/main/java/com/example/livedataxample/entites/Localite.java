@@ -18,6 +18,11 @@ public class Localite implements Serializable {
     public Localite(){
     }
 
+    public Localite(String libelle, long villeId) {
+        this.libelle = libelle;
+        this.villeId = villeId;
+    }
+
     public long getId() {
         return id;
     }

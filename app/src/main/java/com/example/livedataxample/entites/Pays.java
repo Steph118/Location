@@ -16,6 +16,10 @@ public class Pays implements Serializable {
     public Pays() {
     }
 
+    public Pays(String libelle) {
+        this.libelle = libelle;
+    }
+
     public long getId() {
         return id;
     }

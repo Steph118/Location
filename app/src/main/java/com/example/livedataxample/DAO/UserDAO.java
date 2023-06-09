@@ -24,6 +24,9 @@ public interface UserDAO {
     @Delete
     void deleteOne(User user);
 
+    @Query("delete from users")
+    void deleteAll();
+
     @Update
     void updateOne(User user);
 }

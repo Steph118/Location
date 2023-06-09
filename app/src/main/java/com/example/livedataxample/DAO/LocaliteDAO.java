@@ -20,6 +20,8 @@ public interface LocaliteDAO {
     List<Localite> getAllLocalite();
     @Delete
     void deleteOne(Localite localite);
+    @Query("delete from localites")
+    void deleteAll();
     @Update
     void updateOne(Localite localite);
 

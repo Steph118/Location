@@ -23,7 +23,8 @@ public interface PersonneInfosDAO {
 
     @Delete
     void deleteOne(PersonneInfos personneInfos);
-
+    @Query("delete from personnes_infos")
+    void deleteAll();
     @Update
     void updateOne(PersonneInfos personneInfos);
 

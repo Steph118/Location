@@ -18,6 +18,11 @@ public class Ville implements Serializable {
     public Ville() {
     }
 
+    public Ville(String libelle, long paysId) {
+        this.libelle = libelle;
+        this.paysId = paysId;
+    }
+
     public long getId() {
         return id;
     }
